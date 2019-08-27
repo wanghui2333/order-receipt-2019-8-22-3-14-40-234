@@ -12,7 +12,7 @@ public class LineItem {
         this.quantity = quantity;
     }
 
-    public String getDescription() {
+    public String getDesc() {
         return desc;
     }
 
