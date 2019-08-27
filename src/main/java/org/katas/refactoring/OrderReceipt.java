@@ -1,56 +1,82 @@
 package org.katas.refactoring;
 
 /**
- * OrderReceipt prints the details of order including customer name, address, description, quantity,
- * price and amount. It also calculates the sales tax @ 10% and prints as part
- * of order. It computes the total order amount (amount of individual lineItems +
- * total sales tax) and prints it.
+ * OrderReceipt prints the details of order including customer name, address,
+ * description, quantity, price and amount. It also calculates the sales tax @
+ * 10% and prints as part of order. It computes the total order amount (amount
+ * of individual lineItems + total sales tax) and prints it.
  */
 public class OrderReceipt {
-    private Order o;
+	private Order order;
+	private StringBuilder output;
 
-    public OrderReceipt(Order o) {
-        this.o = o;
-    }
+	public OrderReceipt(Order order) {
+		this.order = order;
+		this.output = new StringBuilder();
+	}
 
-    public String printReceipt() {
-        StringBuilder output = new StringBuilder();
+	public String printReceipt() {
+		printHeaders();
+		printCustomerInfo();
+		printLineItems();
+		return output.toString();
+	}
 
-        // print headers
-        output.append("======Printing Orders======\n");
+	private StringBuilder printHeaders() {
+		output.append("======Printing Orders======\n");
+		return output;
+	}
 
-        // print date, bill no, customer name
-//        output.append("Date - " + order.getDate();
-        output.append(o.getCustomerName());
-        output.append(o.getCustomerAddress());
-//        output.append(order.getCustomerLoyaltyNumber());
+	private StringBuilder printCustomerInfo() {
+		output.append(order.getCustomerName());
+		output.append(order.getCustomerAddress());
+		return output;
+	}
 
-        // prints lineItems
-        double totSalesTx = 0d;
-        double tot = 0d;
-        for (LineItem lineItem : o.getLineItems()) {
-            output.append(lineItem.getDescription());
-            output.append('\t');
-            output.append(lineItem.getPrice());
-            output.append('\t');
-            output.append(lineItem.getQuantity());
-            output.append('\t');
-            output.append(lineItem.totalAmount());
-            output.append('\n');
+	private void printStateTax(double totSalesTx) {
+		output.append("Sales Tax").append('\t').append(totSalesTx);
 
-            // calculate sales tax @ rate of 10%
-            double salesTax = lineItem.totalAmount() * .10;
-            totSalesTx += salesTax;
+	}
 
-            // calculate total amount of lineItem = price * quantity + 10 % sales tax
-            tot += lineItem.totalAmount() + salesTax;
-        }
+	private void printLineItems() {
+		double totSalesTx = 0d;
+		double tot = 0d;
+		for (LineItem lineItem : order.getLineItems()) {
+			output.append(lineItem.getDescription());
+			output.append('\t');
+			output.append(lineItem.getPrice());
+			output.append('\t');
+			output.append(lineItem.getQuantity());
+			output.append('\t');
+			output.append(lineItem.totalAmount());
+			output.append('\n');
 
-        // prints the state tax
-        output.append("Sales Tax").append('\t').append(totSalesTx);
+			double salesTax = calculateSalesTax(lineItem);
+			totSalesTx = calculateTotSalesTax(salesTax, totSalesTx);
+			tot = calculateTotalAmount(lineItem, salesTax, tot);
+		}
+		printStateTax(totSalesTx);
+		printTotalAmount(tot);
+	}
 
-        // print total amount
-        output.append("Total Amount").append('\t').append(tot);
-        return output.toString();
-    }
+	private double calculateSalesTax(LineItem lineItem) {
+		double taxRate = .10;
+		double salesTax = lineItem.totalAmount() * taxRate;
+		return salesTax;
+	}
+
+	private double calculateTotSalesTax(double salesTax, double totSalesTx) {
+		totSalesTx += salesTax;
+		return totSalesTx;
+	}
+
+	private double calculateTotalAmount(LineItem lineItem, double salesTax, double tot) {
+		tot += lineItem.totalAmount() + salesTax;
+		return tot;
+	}
+
+	private void printTotalAmount(double tot) {
+		output.append("Total Amount").append('\t').append(tot);
+	}
+
 }
