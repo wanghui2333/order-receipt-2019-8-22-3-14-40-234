@@ -1,5 +1,6 @@
 package org.katas.refactoring;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Order {
@@ -22,6 +23,6 @@ public class Order {
     }
 
     public List<LineItem> getLineItems() {
-        return lineItems;
+        return Collections.unmodifiableList(lineItems);
     }
 }
