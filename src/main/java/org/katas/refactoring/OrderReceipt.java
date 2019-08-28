@@ -105,7 +105,7 @@ public class OrderReceipt {
      * @Date : 2019-08-28 00:03
      */
 	private void printItemInfo(LineItem lineItem){
-        output.append(lineItem.getDesc());
+        output.append(lineItem.getDescription());
         output.append('\t');
         output.append(lineItem.getPrice());
         output.append('\t');
